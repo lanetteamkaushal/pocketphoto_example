@@ -64,7 +64,7 @@ import com.lge.pocketphoto.sample.*;
  */
 public class BluetoothOppObexClientSession implements BluetoothOppObexSession {
 
-    private static final String TAG = "BtOpp ObexClient";
+    private static final String TAG = "BTOppObexClientSession";
     private static final boolean D = Constants.DEBUG;
     private static final boolean V = Constants.VERBOSE;
 
@@ -402,7 +402,7 @@ public class BluetoothOppObexClientSession implements BluetoothOppObexSession {
 
                     if (!mInterrupted && (position != fileInfo.mLength)) {
                         readLength = a.read(buffer, 0, outputBufferSize);
-
+                        Log.d(TAG, "sendFile: ReadLength @404:"+readLength);
                         mCallback.sendMessageDelayed(mCallback
                                 .obtainMessage(BluetoothOppObexSession.MSG_CONNECT_TIMEOUT),
                                 BluetoothOppObexSession.SESSION_TIMEOUT);
@@ -456,6 +456,7 @@ public class BluetoothOppObexClientSession implements BluetoothOppObexSession {
                             if (V) timestamp = System.currentTimeMillis();
 
                             readLength = a.read(buffer, 0, outputBufferSize);
+                            Log.d(TAG, "sendFile: readLength is:"+readLength);
                             outputStream.write(buffer, 0, readLength);                            
                                                 
                             /* check remote abort */

@@ -47,6 +47,7 @@ import android.util.Log;
 
 /**
  * This class in an implementation of the OBEX ClientSession.
+ *
  * @hide
  */
 public final class ClientSession extends ObexSession {
@@ -69,14 +70,14 @@ public final class ClientSession extends ObexSession {
     private final InputStream mInput;
 
     private final OutputStream mOutput;
-    
-    private final String galaxy_y ="GT-S6102";
-    private final String htc ="myTouch_4G_slide";
-    private final String zte ="Sean";
-    private final String samsung ="SPH-M580";
-    private final String kyocera ="C5120";
+
+    private final String galaxy_y = "GT-S6102";
+    private final String htc = "myTouch_4G_slide";
+    private final String zte = "Sean";
+    private final String samsung = "SPH-M580";
+    private final String kyocera = "C5120";
     private final String ulala5 = "imd501";
-    
+
     public ClientSession(final ObexTransport trans) throws IOException {
         mInput = trans.openInputStream();
         mOutput = trans.openOutputStream();
@@ -93,7 +94,7 @@ public final class ClientSession extends ObexSession {
 
         int totalLength = 4;
         byte[] head = null;
-        
+
         // Determine the header byte array
         if (header != null) {
             if (header.nonce != null) {
@@ -115,43 +116,38 @@ public final class ClientSession extends ObexSession {
         byte[] requestPacket = new byte[totalLength];
         // We just need to start at  byte 3 since the sendRequest() method will
         // handle the length and 0x80.
-        requestPacket[0] = (byte)0x10;
-        requestPacket[1] = (byte)0x00;
-        
-        if(galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase())|| samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
-        		|| ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	requestPacket[2] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y >> 8);
-        	requestPacket[3] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y & 0xFF);
-        }
-        else if(zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	requestPacket[2] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT_N850 >> 8);
-        	requestPacket[3] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT_N850 & 0xFF);
-        }
-        else{
-        	requestPacket[2] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT >> 8);
-        	requestPacket[3] = (byte)(ObexHelper.MAX_PACKET_SIZE_INT & 0xFF);
+        requestPacket[0] = (byte) 0x10;
+        requestPacket[1] = (byte) 0x00;
+
+        if (galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase()) || samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
+                || ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            requestPacket[2] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y >> 8);
+            requestPacket[3] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y & 0xFF);
+        } else if (zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            requestPacket[2] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT_N850 >> 8);
+            requestPacket[3] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT_N850 & 0xFF);
+        } else {
+            requestPacket[2] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT >> 8);
+            requestPacket[3] = (byte) (ObexHelper.MAX_PACKET_SIZE_INT & 0xFF);
         }
         if (head != null) {
             System.arraycopy(head, 0, requestPacket, 4, head.length);
         }
 
         // check with local max packet size
-        if(galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase())|| htc.toLowerCase().equals(Build.MODEL.toLowerCase())|| samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
-        		|| ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
-        		throw new IOException("Packet size exceeds max packet size");
-        	}
-        }
-        else if(zte.toLowerCase().equals(Build.MODEL.toLowerCase())|| kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
-        		throw new IOException("Packet size exceeds max packet size");
-        	}
-        }
-        else
-        {
-        	if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT) {
-        		throw new IOException("Packet size exceeds max packet size");
-        	}
+        if (galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase()) || samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
+                || ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
+                throw new IOException("Packet size exceeds max packet size");
+            }
+        } else if (zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
+                throw new IOException("Packet size exceeds max packet size");
+            }
+        } else {
+            if ((requestPacket.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT) {
+                throw new IOException("Packet size exceeds max packet size");
+            }
         }
         HeaderSet returnHeaderSet = new HeaderSet();
         sendRequest(ObexHelper.OBEX_OPCODE_CONNECT, requestPacket, returnHeaderSet, null);
@@ -249,7 +245,7 @@ public final class ClientSession extends ObexSession {
             // Add the connection ID if one exists
             if (mConnectionId != null) {
                 head = new byte[5];
-                head[0] = (byte)HeaderSet.CONNECTION_ID;
+                head[0] = (byte) HeaderSet.CONNECTION_ID;
                 System.arraycopy(mConnectionId, 0, head, 1, 4);
             }
         }
@@ -381,8 +377,8 @@ public final class ClientSession extends ObexSession {
          * Byte 6 & up: headers
          */
         byte[] packet = new byte[totalLength];
-        packet[0] = (byte)flags;
-        packet[1] = (byte)0x00;
+        packet[0] = (byte) flags;
+        packet[1] = (byte) 0x00;
         if (headset != null) {
             System.arraycopy(head, 0, packet, 2, head.length);
         }
@@ -404,6 +400,7 @@ public final class ClientSession extends ObexSession {
 
     /**
      * Verifies that the connection is open.
+     *
      * @throws IOException if the connection is closed
      */
     public synchronized void ensureOpen() throws IOException {
@@ -416,12 +413,14 @@ public final class ClientSession extends ObexSession {
      * Set request inactive. Allows Put and get operation objects to tell this
      * object when they are done.
      */
-    /*package*/synchronized void setRequestInactive() {
+    /*package*/
+    synchronized void setRequestInactive() {
         mRequestActive = false;
     }
 
     /**
      * Set request to active.
+     *
      * @throws IOException if already active
      */
     private synchronized void setRequestActive() throws IOException {
@@ -436,76 +435,72 @@ public final class ClientSession extends ObexSession {
      * and update the header set object provided. If any authentication headers
      * (i.e. authentication challenge or authentication response) are received,
      * they will be processed.
-     * @param opCode the type of request to send to the client
-     * @param head the headers to send to the client
-     * @param header the header object to update with the response
+     *
+     * @param opCode       the type of request to send to the client
+     * @param head         the headers to send to the client
+     * @param header       the header object to update with the response
      * @param privateInput the input stream used by the Operation object; null
-     *        if this is called on a CONNECT, SETPATH or DISCONNECT return
-     *        <code>true</code> if the operation completed successfully;
-     *        <code>false</code> if an authentication response failed to pass
+     *                     if this is called on a CONNECT, SETPATH or DISCONNECT return
+     *                     <code>true</code> if the operation completed successfully;
+     *                     <code>false</code> if an authentication response failed to pass
      * @throws IOException if an IO error occurs
      */
     public boolean sendRequest(int opCode, byte[] head, HeaderSet header,
-            PrivateInputStream privateInput) throws IOException {
+                               PrivateInputStream privateInput) throws IOException {
         //check header length with local max size
-//        if (head != null) {
-//        	if(galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase())|| htc.toLowerCase().equals(Build.MODEL.toLowerCase())|| samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
-//        			|| ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())){
-//        		if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
-//        			throw new IOException("header too large ");
-//        		}
-//        	}
-//        	else if(zte.toLowerCase().equals(Build.MODEL.toLowerCase())|| kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())){
-//        		if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
-//        			throw new IOException("header too large ");
-//				}
-//            }
-//        	else
-//        	{
-//        		if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT) {
-//        			throw new IOException("header too large ");
-//        		}
-//        	}
-//        }
+        if (head != null) {
+            if (galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase()) || samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
+                    || ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+                if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
+                    throw new IOException("header too large ");
+                }
+            } else if (zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+                if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
+                    throw new IOException("header too large ");
+                }
+            } else {
+                if ((head.length + 3) > ObexHelper.MAX_PACKET_SIZE_INT) {
+                    throw new IOException("header too large ");
+                }
+            }
+        }
 
         int bytesReceived;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        out.write((byte)opCode);
+        out.write((byte) opCode);
 
         // Determine if there are any headers to send
-//        if (head == null) {
+        if (head == null) {
             out.write(0x00);
             out.write(0x03);
-//        } else {
-//            out.write((byte)((head.length + 3) >> 8));
-//            out.write((byte)(head.length + 3));
-//            out.write(head);
-//        }
-        Log.d("ClientSession", "sendRequest: " + out.toByteArray().length + ":" + out.toString());
+        } else {
+            out.write((byte) ((head.length + 3) >> 8));
+            out.write((byte) (head.length + 3));
+            out.write(head);
+        }
+        Log.d("ClientSession", "sendRequest: " + out.toByteArray().length + ":" + out.toByteArray().toString());
+        UtilPrint.print(out.toByteArray());
         // Write the request to the output stream and flush the stream
         mOutput.write(out.toByteArray());
         mOutput.flush();
 
         header.responseCode = mInput.read();
-        Log.d("ClientSession", "sendRequest: "+header.responseCode);
+        Log.d("ClientSession", "sendRequest: " + header.responseCode);
         int length = ((mInput.read() << 8) | (mInput.read()));
 
-        if(galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase())|| htc.toLowerCase().equals(Build.MODEL.toLowerCase())|| samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
-        		|| ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	if (length > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
-        		throw new IOException("Packet received exceeds packet size limit");
-        	}
-        }
-        else if(zte.toLowerCase().equals(Build.MODEL.toLowerCase())|| kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())){
-        	if (length > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
-        		throw new IOException("Packet received exceeds packet size limit");
-			}
-        }
-        else
-        {
-        	if (length > ObexHelper.MAX_PACKET_SIZE_INT) {
-        		throw new IOException("Packet received exceeds packet size limit");
-        	}
+        if (galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase()) || samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
+                || ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            if (length > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
+                throw new IOException("Packet received exceeds packet size limit");
+            }
+        } else if (zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+            if (length > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
+                throw new IOException("Packet received exceeds packet size limit");
+            }
+        } else {
+            if (length > ObexHelper.MAX_PACKET_SIZE_INT) {
+                throw new IOException("Packet received exceeds packet size limit");
+            }
         }
         if (length > ObexHelper.BASE_PACKET_LENGTH) {
             byte[] data = null;
@@ -517,23 +512,19 @@ public final class ClientSession extends ObexSession {
                 maxPacketSize = (mInput.read() << 8) + mInput.read();
 
                 //check with local max size
-                if(galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase())|| htc.toLowerCase().equals(Build.MODEL.toLowerCase())|| samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
-                		|| ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())){
-                	if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
-                		maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y;
-                	}
-                }
-                else if(zte.toLowerCase().equals(Build.MODEL.toLowerCase())|| kyocera.toLowerCase().equals(Build.MODEL.toLowerCase()))
-                {
-                	if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
-                		maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT_N850;
-                	}
-                }
-                else
-                {
-                	if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT) {
-                		maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT;
-                	}
+                if (galaxy_y.toLowerCase().equals(Build.MODEL.toLowerCase()) || htc.toLowerCase().equals(Build.MODEL.toLowerCase()) || samsung.toLowerCase().equals(Build.MODEL.toLowerCase())
+                        || ulala5.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+                    if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y) {
+                        maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT_GALAXY_Y;
+                    }
+                } else if (zte.toLowerCase().equals(Build.MODEL.toLowerCase()) || kyocera.toLowerCase().equals(Build.MODEL.toLowerCase())) {
+                    if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT_N850) {
+                        maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT_N850;
+                    }
+                } else {
+                    if (maxPacketSize > ObexHelper.MAX_PACKET_SIZE_INT) {
+                        maxPacketSize = ObexHelper.MAX_PACKET_SIZE_INT;
+                    }
                 }
 
                 if (length > 7) {
@@ -580,9 +571,9 @@ public final class ClientSession extends ObexSession {
                     && (header.mAuthChall != null)) {
 
                 if (handleAuthChall(header)) {
-                    out.write((byte)HeaderSet.AUTH_RESPONSE);
-                    out.write((byte)((header.mAuthResp.length + 3) >> 8));
-                    out.write((byte)(header.mAuthResp.length + 3));
+                    out.write((byte) HeaderSet.AUTH_RESPONSE);
+                    out.write((byte) ((header.mAuthResp.length + 3) >> 8));
+                    out.write((byte) (header.mAuthResp.length + 3));
                     out.write(header.mAuthResp);
                     header.mAuthChall = null;
                     header.mAuthResp = null;

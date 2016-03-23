@@ -134,6 +134,12 @@ public class MainActivity extends Activity {
                 try {
                     imgUri1 = data.getData();
                     imgUri = getRealPathFromURI(imgUri1 = data.getData());
+                    /*******************************************/
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
                     Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
                     if (pairedDevices.size() > 0) {
                         // Loop through paired devices
@@ -145,9 +151,6 @@ public class MainActivity extends Activity {
                             }
                         }
                     }
-
-                    /*******************************************/
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
